@@ -94,22 +94,22 @@ object JafCommand {
                         Jaf Java版本管理工具
                         ==========================
                             
-                        [run] [指定的Java别名]                             运行指定的Java版本
-                            例如：run /java-jdk8/bin -i 8
+                        run <指定的Java别名>                               运行指定的Java版本
+                            例如：run 8
                             
-                        [add | a] [路径] [--alias | -i] [Java的别名]       添加一个路径和别名 
+                        <add | a> <路径> <--alias | -i> <Java的别名>       添加一个路径和别名 
                             例如：add /java-jdk8/bin -i 8
                             
-                        [remove | r] [路径 | 别名]                         移除一个路径
+                        <remove | r> <路径 | 别名>                         移除一个路径
                             例如：change /java/bin
                             
-                        [change | c] [路径] [--alias | -i] [Java的别名]    更新一个路径的别名 
+                        <change | c> <路径> <--alias | -i> <Java的别名>    更新一个路径的别名 
                             例如：change /java/bin -i 9
                             
-                        [list | l]                                       显示所有的路径和别名
+                        <list | l>                                       显示所有的路径和别名
                             例如：list
                             
-                        [--help | -h]                                    帮助 
+                        <--help | -h>                                    帮助 
                     """.trimIndent()
                     )
                 })

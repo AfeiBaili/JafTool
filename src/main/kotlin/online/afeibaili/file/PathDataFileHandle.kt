@@ -19,6 +19,19 @@ class PathDataFileHandle(private val file: File) {
     fun getSet(): HashSet<PathData> = pathDataSet
 
     fun isFileExist(path: String): Boolean = File(path).exists()
+    fun isJavaApplication(path: String): Boolean = when (file.extension) {
+        "java.exe" -> true
+        "javaw.exe" -> true
+        else -> false
+    }
+
+    fun isAliasExist(path: String): Boolean {
+        pathDataSet.forEach { it ->
+            println("${path}已存在 存在于$it")
+            if (it.alias == path) return false
+        }
+        return true
+    }
 
     fun addData(pathData: PathData): Boolean {
         var add: Boolean = pathDataSet.add(pathData)
@@ -29,7 +42,9 @@ class PathDataFileHandle(private val file: File) {
     fun changeData(pathData: PathData): Boolean {
         pathDataSet.forEach { it ->
             if (it.path == pathData.path) {
+                pathDataSet.remove(it)
                 pathDataSet.add(pathData)
+                write()
                 return true
             }
         }

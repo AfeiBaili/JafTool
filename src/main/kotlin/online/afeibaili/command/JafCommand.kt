@@ -3,6 +3,7 @@ package online.afeibaili.command
 import online.afeibaili.data.PathData
 import online.afeibaili.fileHandler
 import online.afeibaili.param.Parameter
+import online.afeibaili.process.ProcessUtil
 import online.afeibaili.text.Message
 
 object JafCommand {
@@ -10,9 +11,27 @@ object JafCommand {
 
     init {
         commandSet.add(
+            CommandBuilder().param(Parameter("run", "r", { s, c ->
+                var pathDataSet: HashSet<PathData> = fileHandler.getSet()
+                pathDataSet.forEach {
+                    if (s == it.alias) {
+                        c.put("path", it.path)
+                        return@Parameter true
+                    }
+                }
+                println("无可用路径别名")
+                false
+            })).build({ command, context ->
+                ProcessUtil.runJavaProcess(context["path"] as String, command.otherParam!!.toTypedArray())
+            }, ArrayList<String>())
+        )
+
+        commandSet.add(
             CommandBuilder().param(Parameter("add", "a", { s, c ->
                 c.put("path", s)
                 fileHandler.isFileExist(s)
+                fileHandler.isJavaApplication(s)
+                fileHandler.isAliasExist(s)
             })).param(Parameter("--alias", "-i", { s, c ->
                 c.put("alias", s)
                 true
@@ -41,19 +60,21 @@ object JafCommand {
                 .param(Parameter("change", "c", { s, c ->
                     c.put("path", s)
                     fileHandler.isFileExist(s)
+                    fileHandler.isJavaApplication(s)
+                    fileHandler.isAliasExist(s)
                 }))
                 .param(Parameter("--alias", "-i", { s, c ->
                     c.put("alias", s)
                     true
                 }))
                 .build { command, context ->
-                    fileHandler.changeData(
+                    var changeData: Boolean = fileHandler.changeData(
                         PathData(
                             context["path"] as String,
                             context["alias"] as String
                         )
                     )
-                    println("修改成功")
+                    println(if (changeData) "修改成功" else "没有可匹配的数据")
                 })
 
         commandSet.add(
@@ -70,8 +91,11 @@ object JafCommand {
                     println(
                         """
                         ==========================
-                        Jaf
+                        Jaf Java版本管理工具
                         ==========================
+                            
+                        [run] [指定的Java别名]                             运行指定的Java版本
+                            例如：run /java-jdk8/bin -i 8
                             
                         [add | a] [路径] [--alias | -i] [Java的别名]       添加一个路径和别名 
                             例如：add /java-jdk8/bin -i 8
@@ -93,6 +117,7 @@ object JafCommand {
 
     fun parse(args: Array<String>) {
         var parses: Message = commandSet.parses(args)
-        println(parses)
+        if (parses.matchValue == 0) println("请使用 --help 帮助")
+        else println(parses)
     }
 }

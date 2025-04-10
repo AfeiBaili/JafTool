@@ -19,10 +19,17 @@ class PathDataFileHandle(private val file: File) {
     fun getSet(): HashSet<PathData> = pathDataSet
 
     fun isFileExist(path: String): Boolean = File(path).exists()
-    fun isJavaApplication(path: String): Boolean = when (file.extension) {
-        "java.exe" -> true
-        "javaw.exe" -> true
-        else -> false
+    fun getJavaBinPath(path: String): String? {
+        var file = File(path)
+        if (file.name == "bin") {
+            return file.canonicalPath
+        }
+        var listFiles = file.listFiles { it.name == "bin" }
+        if (listFiles != null && listFiles.isNotEmpty()) {
+            return listFiles[0].canonicalPath
+        }
+        println("这不是一个Java目录")
+        return null
     }
 
     fun isAliasExist(path: String): Boolean {

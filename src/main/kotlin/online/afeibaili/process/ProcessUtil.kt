@@ -1,5 +1,7 @@
 package online.afeibaili.process
 
+import online.afeibaili.Util
+import online.afeibaili.fileHandler
 import java.nio.charset.Charset
 
 object ProcessUtil {
@@ -13,12 +15,19 @@ object ProcessUtil {
         return simpleProcess.waitFor()
     }
 
-    fun runJavaProcess(path: String, command: Array<String>, redirect: Boolean = true) {
-        var process: Process = ProcessBuilder(path, *command).redirectErrorStream(redirect).start()
-        println("default\t" + "用法".toByteArray(Charset.defaultCharset()).joinToString(" "))
-        println("utf-8\t" + "用法".toByteArray(Charset.forName("UTF-8")).joinToString(" "))
-        println("utf-16\t" + "用法".toByteArray(Charset.forName("UTF-16")).joinToString(" "))
-        println("gbk\t" + "用法".toByteArray(Charset.forName("gbk")).joinToString(" "))
+    fun runJavaProcess(path: String, param: Array<String>, redirect: Boolean = true) {
+        executeJavaProcess(path, "java", param, redirect)
+    }
+
+    fun executeJavaProcess(path: String, command: String, param: Array<String>, redirect: Boolean = true) {
+        var javaBinPath: String? = fileHandler.getJavaBinPath(path)
+        if (javaBinPath == null) {
+            Util.exit("提供的路径没有bin目录")
+        }
+        var fullPath: String = "${javaBinPath}\\$command"
+
+        println(fullPath)
+        var process: Process = ProcessBuilder(fullPath, *param).redirectErrorStream(redirect).start()
         process.inputStream.bufferedReader(Charset.forName("GBK")).forEachLine { println(it) }
     }
 }

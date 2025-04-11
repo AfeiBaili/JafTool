@@ -21,4 +21,11 @@ object Util {
     fun exit() {
         exitProcess(0)
     }
+
+    fun isExistFormat(format: String): Boolean {
+        var list: Array<String> = arrayOf("tar.gz", "rpm", "deb", "rpm", "dmg", "zip", "exe", "msi")
+        var isExist: Boolean = list.contains(format)
+        if (!isExist) println("不存在的格式请查看支持的格式：${list.joinToString("、")}")
+        return isExist
+    }
 }

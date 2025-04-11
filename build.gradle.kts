@@ -12,6 +12,7 @@ repositories {
 dependencies {
     testImplementation(kotlin("test"))
     implementation(files("./lib/command-1.1.0.jar"))
+    implementation("org.jsoup:jsoup:1.19.1")
 }
 
 

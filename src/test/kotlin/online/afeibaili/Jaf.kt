@@ -12,6 +12,9 @@ class Jaf {
 
         array =
             "execute 8 command jps".split(" ").toTypedArray()
+
+        array =
+            "download 18 -s windows -f zip".split(" ").toTypedArray()
         JafCommand.parse(array)
     }
 
